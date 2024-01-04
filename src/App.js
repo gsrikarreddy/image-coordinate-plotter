@@ -85,7 +85,8 @@ function App() {
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-    
+  
+    let newPoint = null;
     let label = '';
   
     if (!referencePoints.x1) {
@@ -101,25 +102,19 @@ function App() {
       setReferencePoints(points => ({ ...points, y2: { x, y } }));
       setIsReferenceSet(true);
       label = 'y2';
-      setShowModal(true); // This will show the modal for entering actual coordinates
-    } else {
-      setCoordinates(prevCoordinates => [...prevCoordinates, { x, y }]);
-    }
-
-    if (isReferenceSet && !label) {
-      const transformedPoint = plotPoint(e.clientX - rect.left, e.clientY - rect.top);
-      if (transformedPoint) {
-        setCoordinates(prevCoordinates => [...prevCoordinates, transformedPoint]);
-        drawPoint(e.clientX - rect.left, e.clientY - rect.top);
-      }
+      setShowModal(true);
+    } else if (isReferenceSet) {
+      newPoint = plotPoint(x, y);
     }
   
     if (label) {
       drawPointWithLabel(x, y, label);
-    } else {
+    } else if (newPoint) {
+      setCoordinates(prevCoordinates => [...prevCoordinates, newPoint]);
       drawPoint(x, y);
     }
   };
+  
   
   
 
